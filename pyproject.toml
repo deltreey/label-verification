@@ -1,0 +1,17 @@
+[project]
+name = "label-verification"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.129.0",
+    "numpy>=2.4.2",
+    "opencv-python>=4.13.0.92",
+    "pillow>=12.1.1",
+    "pytest>=9.0.2",
+    "python-doctr[torch]>=1.0.1",
+    "python-multipart>=0.0.22",
+    "rapidfuzz>=3.14.3",
+    "uvicorn>=0.40.0",
+]
