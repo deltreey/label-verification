@@ -26,6 +26,21 @@ class OCR(object):
     def __post_init__(self):
         self.processed_img = self.doctr_ocr_from_bytes()
 
+    def upscale_for_detection(self, bgr):
+        h, w = bgr.shape[:2]
+        scale = 2.0
+        return cv2.resize(bgr, (int(w*scale), int(h*scale)), interpolation=cv2.INTER_CUBIC)
+
+    def is_bold_and_all_caps(self, text: str, box: list) -> bool:
+        """Simple proxy for bold/all-caps: check text.isupper() + box height variance (taller for bold)."""
+        if not text.strip().upper().startswith("GOVERNMENT WARNING:"):
+            return False
+        # Box is [[x1,y1], [x2,y2], [x3,y3], [x4,y4]] from PaddleOCR
+        heights = [box[1][1] - box[0][1], box[2][1] - box[3][1]]  # vertical spans
+        avg_height = sum(heights) / len(heights)
+        # Heuristic: bold text often has larger vertical span or thicker contours (simplified)
+        return text.isupper() and avg_height > 20  # Tune threshold on your images
+
     def decode_bytes_to_bgr(self, image_bytes: bytes) -> numpy.ndarray:
         arr = numpy.frombuffer(image_bytes, numpy.uint8)
         bgr = cv2.imdecode(arr, cv2.IMREAD_COLOR)
