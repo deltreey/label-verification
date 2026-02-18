@@ -1,0 +1,403 @@
+- type: distilled
+  required: []
+  type_list:
+  - Straight Bourbon Whiskies
+  - Straight Corn Whiskies
+  - Straight Malt Whiskies
+  - Straight Rye Malt Whiskies
+  - Straight Rye Whiskies
+  - Straight Wheat Whiskies
+  - Straight Whiskies
+  - Advocaat
+  - Alcohol
+  - Amaretto
+  - Anise
+  - Anisette
+  - Apple Brandy
+  - Applejack
+  - Apricot Sour
+  - Aquavit
+  - Arack
+  - Arak
+  - Armagnac
+  - Bitters
+  - Black Russian
+  - Blended Applejack Or Applejack - A Blend
+  - Blended Bourbon Whisky Or Bourbon Whisky - A Blend
+  - Blended Canadian Whisky Or Canadian Whisky - A Blend
+  - Blended Corn Whisky Or Corn Whisky - A Blend
+  - Blended Irish Whisky Or Irish Whisky - A Blend
+  - Blended Light Whisky Or Light Whisky - A Blend
+  - Blended Malt Whisky Or Malt Whisky - A Blend
+  - Blended Rye Malt Whisky Or Rye Malt Whisky - A Blend
+  - Blended Rye Whisky Or Rye Whisky - A Blend
+  - Blended Scotch Whisky Or Scotch Whisky - A Blend
+  - Blended Wheat Whisky Or Wheat Whisky - A Blend
+  - Blended Whisky Or Whisky - A Blend
+  - Bloody Mary
+  - Bourbon Cordial
+  - Bourbon Liqueur
+  - Bourbon Whisky
+  - Brandy
+  - Brandy Alexander
+  - Brandy Cordial
+  - Brandy Liqueur
+  - Calvados
+  - Canadian Whisky
+  - Cognac
+  - Compounded Gin
+  - Cordial
+  - Corn Whisky
+  - Creme De
+  - Curacao
+  - Daiquiri
+  - Distilled Gin
+  - Distilled Spirits Specialty
+  - Dried Fruit Brandy
+  - Egg Nog
+  - Flavored Brandy
+  - Flavored Gin
+  - Flavored Rum
+  - Flavored Vodka
+  - Flavored Whisky
+  - Fruit Brandy
+  - Gimlet
+  - Gin
+  - Gin Cordial
+  - Gin Liqueur
+  - Goldwasser
+  - Grain Spirits
+  - Grappa
+  - Grappa Brandy
+  - Grasshopper
+  - Imitation Distilled Spirits
+  - Immature Brandy
+  - Irish Whisky
+  - Kirschwasser
+  - Kummel
+  - Lees Brandy
+  - Light Whisky
+  - Liqueur
+  - Mai Tai
+  - Malt Whisky
+  - Manhattan
+  - Marc Brandy
+  - Margarita
+  - Martini
+  - Mescal
+  - Mezcal
+  - Mint Julep
+  - Neutral Brandy
+  - Neutral Spirits
+  - Old Fashioned
+  - Ouzo
+  - Peppermint Schnapps
+  - Pineapple Daiquiri
+  - Pink Squirrel
+  - Pisco
+  - Pisco Sour
+  - Pomace Brandy
+  - Raisin Brandy
+  - Raki
+  - Recognized Cocktails
+  - Redistilled Gin
+  - Residue Brandy
+  - Rock And Bourbon
+  - Rock And Brandy
+  - Rock And Rum
+  - Rock And Rye
+  - Rum
+  - Rum Cordial
+  - Rum Liqueur
+  - Rye Cordial
+  - Rye Liqueur
+  - Rye Malt Whisky
+  - Rye Whisky
+  - Sambuca
+  - Scotch Manhattan
+  - Scotch Whisky
+  - Screwdriver
+  - Slivovitz
+  - Sloe Gin
+  - Sloe Gin Fizz
+  - Spirit Whisky
+  - Straight Bourbon Whisky
+  - Straight Corn Whisky
+  - Straight Malt Whisky
+  - Straight Rye Malt Whisky
+  - Straight Rye Whisky
+  - Straight Wheat Whisky
+  - Straight Whisky
+  - Strawberry Margarita
+  - Substandard Brandy
+  - Tequila
+  - Tom Collins
+  - Triple Sec
+  - Vodka
+  - Vodka Collins
+  - Vodka Gimlet
+  - Vodka Martini
+  - Vodka Mint Julep
+  - Wallbanger
+  - Wheat Whisky
+  - Whisky
+  - Whisky Distilled From Bourbon Mash
+  - Whisky Distilled From Malt Mash
+  - Whisky Distilled From Rye Malt Mash
+  - Whisky Distilled From Rye Mash
+  - Whisky Distilled From Wheat Mash
+  - Whisky Sour
+  - White Russian
+- type: malt
+  required: []
+  type_list:
+  - Ale
+  - Amber Ale
+  - Amber Lager
+  - Barley Wine Ale/Barley Wine Style Ale
+  - Bavarian
+  - Beer
+  - Bitter Ale
+  - Black And Tan
+  - Bock Beer
+  - Brown Ale
+  - Cereal Beverage
+  - Cream Ale
+  - Cream Stout
+  - Dortmund/Dortmunder
+  - Draft Beer/Draught Beer
+  - Dry Beer
+  - Export Ale
+  - Export Beer
+  - Golden Ale
+  - Golden Lager
+  - Half And Half
+  - Ice Beer
+  - Imperial Stout
+  - India Pale Ale
+  - Kulmbacher
+  - Lager/Lager Beer
+  - Malt Beverage Specialty
+  - Malt Liquor
+  - Munich/Munchner
+  - Near Beer
+  - Pale Ale
+  - Pils
+  - Pilsen/Pilsener/Pilsner
+  - Porter
+  - Rye Beer
+  - Salvator
+  - Stock Ale
+  - Stout
+  - Vienna
+  - Wein/Weiner
+  - Wheat Beer
+  - Wurtzburger
+- type: wine
+  required: []
+  type_list:
+  - Aloxe-Corton
+  - Alsace Or Vin d'Alsace
+  - Amber Wine
+  - Angelica
+  - Anjou
+  - Aperitif Wine
+  - Apple Wine
+  - Asti Spumante
+  - Barbaresco
+  - Barbera d' Alba
+  - Barbera d'Asti
+  - Bardolino
+  - Barolo
+  - Barsac
+  - Batard-Montrachet
+  - Beaujolais
+  - Beaujolais Villages
+  - Beaune
+  - Bernkasteler Doctor (Doktor)
+  - Berry Wine
+  - Bonnes Mares
+  - Bordeaux
+  - Bordeaux Blanc
+  - Bordeaux Rouge
+  - Bourgogne
+  - Brouilly
+  - Brunello di Montalcino
+  - Bulk Process Crackling Wine
+  - Burgundy
+  - Carbonated Wine
+  - Chablis
+  - Chambertin
+  - Chambolle-Musigny
+  - Champagne
+  - Charmes-Chambertin
+  - Chassagne-Montrachet
+  - Chateau Lafite
+  - Chateau Margaux
+  - Chateau Yquem
+  - Chateauneuf-du-Pape
+  - Chenas
+  - Chevalier-Montrachet
+  - Chianti
+  - Chiroubles
+  - Cider
+  - Citrus Wine
+  - Claret
+  - Clos de la Roche
+  - Clos de Vougeot
+  - Corton
+  - Corton-Charlemagne
+  - Cote de Beaune
+  - Cote de Beaune-Villages
+  - Cote de Brouilly
+  - Cote de Nuits
+  - Cote de Nuits-Villages
+  - Cote Rotie
+  - Coteaux du Layon
+  - Cotes du Rhone
+  - Crackling Wine
+  - Cremant Wine
+  - Dao
+  - Deidesheimer
+  - Dessert Wine
+  - Dexheimer Doktor
+  - Dolcetto d'Alba
+  - Echezeaux
+  - Entre-Deux-Mers
+  - Erbacher Marcobrunn
+  - Fleurie
+  - Forster
+  - Forster Jesuitengarten
+  - Frascati
+  - Frizzante Wine
+  - Fruit Wine
+  - Gamay Beaujolais
+  - Gattinara
+  - Gevrey-Chambertin
+  - Graacher Himmelreich
+  - Grands Echezeaux
+  - Grape Wine
+  - Graves
+  - Haut Medoc
+  - Haut Sauterne
+  - Hermitage
+  - Honey Wine
+  - Imitation Wine
+  - La Tache
+  - Lacryma Christi
+  - Lagrima
+  - Liebfrauenmilch
+  - Liebfraumilch
+  - Light Angelica
+  - Light Madeira
+  - Light Muscatel
+  - Light Port
+  - Light Sherry
+  - Light Wine
+  - Loire
+  - Macon
+  - Madeira
+  - Malaga
+  - Margaux
+  - Marsala
+  - Mead
+  - Medoc
+  - Mercurey
+  - Meursault
+  - Montrachet
+  - Morgon
+  - Mosel
+  - Moselle
+  - Mosel-Saar-Ruwer
+  - Moulin-a-Vent
+  - Muscadet
+  - Muscadine
+  - Muscat/Muscato
+  - Muscatel
+  - Musigny
+  - Nebbiolo d'Alba
+  - Nuits or Nuits-Saint-Georges
+  - Ockfener Bockstein
+  - Oporto
+  - Orvieto
+  - Other Than Standard Wine
+  - Pauillac
+  - Pear Wine
+  - Perlant Wine
+  - Perry
+  - Petillant Wine
+  - Piesporter Goldtropfchen
+  - Piesporter Michelsberg
+  - Piesporter Treppchen
+  - Pink Wine
+  - Pomerol
+  - Pommard
+  - Port
+  - Porto or Vinho Do Porto
+  - Pouilly-Fuisse
+  - Pouilly Fume
+  - Puligny-Montrachet
+  - Raisin Wine
+  - Reciotto Wine
+  - Red Wine
+  - Retsina Wine
+  - Rhine Wine Or Hock
+  - Rhone
+  - Rice Wine
+  - Richebourg
+  - Rioja
+  - Romanee-Conti
+  - Romanee Saint-Vivant
+  - Rose d'Anjou
+  - Rose Wine
+  - Rudesheimer
+  - Saint-Amour
+  - Saint-Emilion
+  - Saint-Estephe
+  - Saint-Julien
+  - Sake
+  - Sancerre
+  - Santenay
+  - Saumur
+  - Sauterne
+  - Savigny or Savigny-les-Beaune
+  - Scharzhofberger
+  - Schloss Johannisberger
+  - Schloss Vollrads
+  - Scuppernong
+  - Sherry
+  - Soave
+  - Sparkling Wine
+  - Substandard Wine
+  - Table Wine
+  - Tavel
+  - Tokay
+  - Touraine
+  - Valpolicella
+  - Varietal Wine (Single/Multi)
+  - Vermouth
+  - Vino Nobile de Montepulciano
+  - Volnay
+  - Vosne-Romanee
+  - Vouvray
+  - Wehlener Sonnenuhr
+  - White Wine
+  - Wine From Other Agricultural Products
+  - Wine Specialty
+  - Zeller Schwarze Katz
+- type: all
+  field_mapping:
+  - Brand
+  - Designation
+  - Name and Address
+  - Country of Origin
+  - Net Contents
+  - Alcohol Content
+  - Sulfite and Aspartame Declarations
+  - Class or Type Designation
+  - Color Additive Disclosure
+  required:
+  - 'GOVERNMENT WARNING: (1) According to the Surgeon General, women should not drink
+    alcoholic beverages during pregnancy because of the risk of birth defects. (2)
+    Consumption of alcoholic beverages impairs your ability to drive a car or operate
+    machinery, and may cause health problems.'

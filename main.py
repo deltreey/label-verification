@@ -14,6 +14,7 @@ from doctr.models import ocr_predictor
 import re
 
 from logic.ocr import OCR
+from logic.required_text import RequiredText
 
 app = FastAPI(title="Alcohol Label Warning Checker")
 
@@ -22,14 +23,6 @@ def upscale_for_detection(bgr):
     h, w = bgr.shape[:2]
     scale = 2.0
     return cv2.resize(bgr, (int(w*scale), int(h*scale)), interpolation=cv2.INTER_CUBIC)
-
-
-GOVT_WARNING = (
-    "GOVERNMENT WARNING: (1) According to the Surgeon General, women should not drink alcoholic beverages "
-    "during pregnancy because of the risk of birth defects. "
-    "(2) Consumption of alcoholic beverages impairs your ability to drive a car or "
-    "operate machinery, and may cause health problems."
-)
 
 
 def is_bold_and_all_caps(text: str, box: list) -> bool:
@@ -41,6 +34,61 @@ def is_bold_and_all_caps(text: str, box: list) -> bool:
     avg_height = sum(heights) / len(heights)
     # Heuristic: bold text often has larger vertical span or thicker contours (simplified)
     return text.isupper() and avg_height > 20  # Tune threshold on your images
+
+@app.post("/review")
+async def review(file: UploadFile = File(...)):
+    response = {}
+    try:
+        contents = await file.read()
+        ocr = OCR(file_contents=contents)
+        if ocr.processed_img is None:
+            response = {
+                "decision": "Human Review",
+                "confidence": 0.0,
+                "full_text": "",
+                "findings": ocr.findings
+            }
+        basic_check = ocr.has_text('GOVERNMENT WARNING')
+        if not basic_check['ok']:
+            ocr.findings.append('GOVERNMENT WARNING header not found')
+            response = {
+                "decision": "Reject",
+                "confidence": basic_check['confidence'],
+                "full_text": ocr.text,
+                "findings": ocr.findings
+            }
+        else:
+            ocr.findings.append('GOVERNMENT WARNING header found')
+            requirements = RequiredText(type="all").as_list() # @TODO: swap this for specific types by form inputs
+            for item in requirements:
+                found = ocr.has_text(item)
+                if found:
+                    ocr.findings.append(f"Required text '{item}' found")
+                else:
+                    ocr.findings.append(f"Required text '{item}' not found")
+                    response = {
+                        "decision": "Reject",
+                        "confidence": found['confidence'],
+                        "full_text": ocr.text,
+                        "findings": ocr.findings
+                    }
+                    break
+            response = {
+                "decision": "Human Review",
+                "confidence": 0.0,
+                "full_text": ocr.text,
+                "findings": ocr.findings
+            }
+    except Exception as err:
+        response = {
+            "decision": "Human Review",
+            "confidence": 0.0,
+            "full_text": "",
+            "findings": ["Error Occurred", f"Exception: {err}"]
+        }
+    finally:
+        return JSONResponse(response)
+
 
 
 @app.post("/check-warning")

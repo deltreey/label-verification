@@ -21,6 +21,7 @@ class OCR(object):
     )
     processed_image = None
     text = None
+    findings = []
 
     def __post_init__(self):
         self.processed_img = self.doctr_ocr_from_bytes()
@@ -34,7 +35,7 @@ class OCR(object):
 
     def preprocess_for_doctr(self, bgr: numpy.ndarray) -> numpy.ndarray:
         """
-        Return: RGB uint8 image (HxWx3) suitable for docTR.
+        Return: BGR uint8 image (HxWx3) suitable for docTR.
         Avoid hard thresholding here; it hurts the detector.
         """
         # Contrast boost in LAB (safe for colored labels)
@@ -56,33 +57,102 @@ class OCR(object):
                            [0, -1, 0]], dtype=numpy.float32)
         bgr2 = cv2.filter2D(bgr2, -1, kernel)
 
-        rgb = cv2.cvtColor(bgr2, cv2.COLOR_BGR2RGB)
-        return rgb
+        # rgb = cv2.cvtColor(bgr2, cv2.COLOR_BGR2RGB)
+        return bgr2
 
     def doctr_ocr_from_bytes(self) -> dict:
-        image_bytes = self.file_contents
-        bgr = self.decode_bytes_to_bgr(image_bytes)
-        rgb = self.preprocess_for_doctr(bgr)
-
-        # docTR expects a file path in your version
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
-            tmp_path = f.name
-
-        # cv2 writes BGR, so convert back for writing
-        bgr_out = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
-        ok = cv2.imwrite(tmp_path, bgr_out)
-        if not ok:
-            raise RuntimeError("cv2.imwrite failed")
-
-        try:
-            doc = DocumentFile.from_images([tmp_path])
-            result = self.model(doc)
-            # page = result.pages[0]
-            # img = page.render()
-            # img.save("debug_boxes.png")
+        doc = DocumentFile.from_images(self.file_contents)
+        result = self.model(doc)
+        metrics = self.ocr_quality_metrics(result)
+        if metrics['ok']:
+            self.findings.append("OCR processing successful")
+            self.findings.append("OCR no preprocessing required")
             return result.export()
-        finally:
-            os.remove(tmp_path)
+        else:
+            bgr = self.decode_bytes_to_bgr(self.file_contents)
+            bgr = self.preprocess_for_doctr(bgr)
+            success, encoded = cv2.imencode(".png", bgr)
+            if not success:
+                raise ValueError("Image encoding failed")
+            doc = DocumentFile.from_images([encoded])
+            result = self.model(doc)
+            metrics = self.ocr_quality_metrics(result)
+            if metrics['ok']:
+                self.findings.append("OCR processing successful")
+                self.findings.append("OCR preprocessing required")
+                return result.export()
+        self.findings.append("OCR processing failed")
+        return None
+
+    def iter_words(self, doctr_doc):
+        # doctr_doc.pages -> blocks -> lines -> words
+        for page in doctr_doc.pages:
+            for block in page.blocks:
+                for line in block.lines:
+                    for word in line.words:
+                        yield word
+
+    def looks_garbage(self, token: str) -> bool:
+        VOWEL_RE = re.compile(r"[aeiouAEIOU]")
+        ALNUM_RE = re.compile(r"[A-Za-z0-9]")
+        t = token.strip()
+        if not t:
+            return True
+        if len(t) == 1 and not t.isalnum(): # lone punctuation like "-" "&"
+            return True
+        if not ALNUM_RE.search(t): # no letters/digits
+            return True
+        if len(t) >= 6 and not VOWEL_RE.search(t):  # "FTSXZP" or other junk that's not a word
+            return True
+        return False
+
+    def ocr_quality_metrics(self, doctr_result):
+        words = list(self.iter_words(doctr_result))
+        if not words:
+            return {"ok": False, "reason": "no_words", "word_count": 0}
+
+        confs = []
+        weights = []
+        garbage = 0
+        low_conf = 0
+
+        for w in words:
+            txt = w.value or ""
+            conf = float(getattr(w, "confidence", 0.0))
+            length = max(len(txt.strip()), 1)
+
+            confs.append(conf)
+            weights.append(length)
+
+            if conf < 0.6:
+                low_conf += 1
+            if self.looks_garbage(txt):
+                garbage += 1
+
+        weight = sum(weights)
+        mean_conf = sum(c * wt for c, wt in zip(confs, weights)) / weight
+        low_conf_frac = low_conf / len(words)
+        garbage_frac = garbage / len(words)
+
+        # Very simple gate rules (tune later)
+        ok = True
+        reasons = []
+
+        if len(words) < 30:
+            ok = False; reasons.append("too_few_words")
+        if garbage_frac > 0.35:
+            ok = False; reasons.append("too_much_garbage")
+        if mean_conf < 0.75 and garbage_frac > 0.20:
+            ok = False; reasons.append("low_conf_and_garbage")
+
+        return {
+            "ok": ok,
+            "reasons": reasons,
+            "word_count": len(words),
+            "mean_conf": round(mean_conf, 3),
+            "low_conf_frac": round(low_conf_frac, 3),
+            "garbage_frac": round(garbage_frac, 3),
+        }
 
     def doctr_export_to_text(
             self,
@@ -154,20 +224,21 @@ class OCR(object):
         return j == len(search_text)
 
     def has_text(self, text_to_find, exact=False):
-        processed_img = self.doctr_ocr_from_bytes()
-        self.text = self.doctr_export_to_text(processed_img, min_word_conf=0.4, drop_single_char_below=0.8)
+        self.text = self.doctr_export_to_text(self.processed_img)
         # print(text)
-
-        idx = self.text.find(text_to_find[0]) # first character
-        if idx < 0:
-            return {"ok": False, "reason": "missing_or_not_all_caps_header"}
 
         if exact:
             ok = self.subsequence_contains(self.text, text_to_find, case_sensitive=True)
-            return {"ok": ok, "reason": None if ok else "missing_required_tokens"}
+            return {
+                "ok": ok,
+                "reason": None if ok else "missing_required_tokens"
+            }
         else:
             score = self.fuzzy_contains(self.text, text_to_find)
-            ok = score > 100
-            return {"ok": ok, "reason": None if ok else f"Score too low: {score}"}
+            ok = score > 70
+            return {
+                "ok": ok,
+                "confidence": score
+            }
 
 

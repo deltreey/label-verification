@@ -3,7 +3,7 @@ EXPORT_DIR := export
 PYTHON := uv run python
 ENVFILE ?= .env
 
-.PHONY: build dev
+.PHONY: build dev test
 
 # Load .env file
 ifneq (,$(wildcard $(ENVFILE)))
@@ -17,3 +17,6 @@ build:
 
 dev:
 	$(PYTHON) main.py
+
+test:
+	$(PYTHON) -m pytest tests

@@ -316,6 +316,7 @@ dependencies = [
     { name = "pytest" },
     { name = "python-doctr" },
     { name = "python-multipart" },
+    { name = "pyyaml" },
     { name = "rapidfuzz" },
     { name = "uvicorn" },
 ]
@@ -329,6 +330,7 @@ requires-dist = [
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "python-doctr", extras = ["torch"], specifier = ">=1.0.1" },
     { name = "python-multipart", specifier = ">=0.0.22" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "rapidfuzz", specifier = ">=3.14.3" },
     { name = "uvicorn", specifier = ">=0.40.0" },
 ]
