@@ -47,8 +47,6 @@ def check_rules(ocr: OCR, fields: dict):
                     return response
             # Get type designation
             type = None
-            print(requirements.as_type_list())
-            print(bevg_type)
             for item in requirements.as_type_list():
                 found = ocr.has_text(item)
                 print(f"Checking for '{item}': {found}")

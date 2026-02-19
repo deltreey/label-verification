@@ -240,7 +240,6 @@ class OCR(object):
 
     def has_text(self, text_to_find, exact=False):
         self.text = self.doctr_export_to_text(self.processed_img)
-        # print(text)
 
         if exact:
             ok = self.subsequence_contains(self.text, text_to_find, case_sensitive=True)
