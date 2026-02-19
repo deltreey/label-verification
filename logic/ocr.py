@@ -1,8 +1,8 @@
 import os
 import re
 import tempfile
-from dataclasses import dataclass
-from typing import Any, List
+from dataclasses import dataclass, field
+from typing import Any, ClassVar
 
 import cv2
 import numpy
@@ -14,14 +14,14 @@ from rapidfuzz import fuzz
 @dataclass
 class OCR(object):
     file_contents: bytes
-    model = ocr_predictor(
+    model: ClassVar[Any] = ocr_predictor(
         det_arch="db_resnet50",
         reco_arch="vitstr_small",
         pretrained=True
     )
-    processed_image = None
-    text = None
-    findings = []
+    processed_img: dict[str, Any] | None = field(init=False, default=None)
+    text: str | None = field(init=False, default=None)
+    findings: list[str] = field(init=False, default_factory=list)
 
     def __post_init__(self):
         self.processed_img = self.doctr_ocr_from_bytes()
@@ -254,5 +254,4 @@ class OCR(object):
                 "ok": ok,
                 "confidence": score
             }
-
 

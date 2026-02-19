@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Label Verification Upload</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #14213d;
+      --muted: #4f5d75;
+      --border: #cfd8e3;
+      --accent: #1f6feb;
+      --accent-soft: #e8f0ff;
+      --ok: #1f883d;
+      --warn: #b54708;
+      --reject: #cf222e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Trebuchet MS", "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
+    }
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+    .title {
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+      letter-spacing: 0.2px;
+    }
+    .subtitle {
+      margin: 0 0 20px;
+      color: var(--muted);
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 28px rgba(20, 33, 61, 0.07);
+    }
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+    .row {
+      display: grid;
+      gap: 10px;
+    }
+    label {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    select, textarea, button {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      color: var(--text);
+      background: #fff;
+    }
+    textarea {
+      min-height: 120px;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      resize: vertical;
+    }
+    .dropzone {
+      border: 2px dashed #9ab0cc;
+      background: #f9fbff;
+      border-radius: 12px;
+      min-height: 120px;
+      display: grid;
+      place-items: center;
+      padding: 10px;
+      text-align: center;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .dropzone:hover, .dropzone.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: #0b3e91;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .file-name {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: #334155;
+      word-break: break-all;
+    }
+    .btn {
+      border: 0;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 11px 14px;
+    }
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .results {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+    .result-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 4px 9px;
+      margin-left: 8px;
+    }
+    .badge.review { background: #fff8e6; color: var(--warn); }
+    .badge.reject { background: #ffecec; color: var(--reject); }
+    .badge.ok { background: #e9fbe8; color: var(--ok); }
+    .kv {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 6px 0;
+    }
+    ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="title">Alcohol Label Verification</h1>
+    <p class="subtitle">Select an endpoint, drag files into the boxes, and submit.</p>
+
+    <div class="card grid">
+      <div class="row">
+        <label for="endpoint">Endpoint</label>
+        <select id="endpoint">
+          <option value="/review">/review (image + pdf)</option>
+          <option value="/review_with_fields">/review_with_fields (image + fields_json)</option>
+          <option value="/bulk">/bulk (zip of zips)</option>
+        </select>
+      </div>
+
+      <div id="imageRow" class="row">
+        <label>Image File</label>
+        <input id="imageInput" class="hidden" type="file" accept="image/*" />
+        <div id="imageDrop" class="dropzone">
+          <div>
+            <div><strong>Drag image here</strong> or click to choose</div>
+            <div class="file-name" id="imageName">No file selected</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="pdfRow" class="row">
+        <label>PDF Form</label>
+        <input id="pdfInput" class="hidden" type="file" accept=".pdf,application/pdf" />
+        <div id="pdfDrop" class="dropzone">
+          <div>
+            <div><strong>Drag PDF here</strong> or click to choose</div>
+            <div class="file-name" id="pdfName">No file selected</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="fieldsRow" class="row hidden">
+        <label for="fieldsJson">fields_json (JSON dictionary)</label>
+        <textarea id="fieldsJson">{
+  "Product Type": "malt",
+  "Brand": "BUSCH"
+}</textarea>
+      </div>
+
+      <div id="zipRow" class="row hidden">
+        <label>Bulk Zip File</label>
+        <input id="zipInput" class="hidden" type="file" accept=".zip,application/zip" />
+        <div id="zipDrop" class="dropzone">
+          <div>
+            <div><strong>Drag zip here</strong> or click to choose</div>
+            <div class="file-name" id="zipName">No file selected</div>
+          </div>
+        </div>
+      </div>
+
+      <button id="submitBtn" class="btn">Submit</button>
+    </div>
+
+    <div id="results" class="results"></div>
+  </div>
+
+  <script>
+    const endpointEl = document.getElementById("endpoint");
+    const submitBtn = document.getElementById("submitBtn");
+    const resultsEl = document.getElementById("results");
+
+    const imageInput = document.getElementById("imageInput");
+    const pdfInput = document.getElementById("pdfInput");
+    const zipInput = document.getElementById("zipInput");
+
+    const imageRow = document.getElementById("imageRow");
+    const pdfRow = document.getElementById("pdfRow");
+    const fieldsRow = document.getElementById("fieldsRow");
+    const zipRow = document.getElementById("zipRow");
+
+    function bindDropzone(dropEl, inputEl, nameEl) {
+      dropEl.addEventListener("click", () => inputEl.click());
+      inputEl.addEventListener("change", () => {
+        nameEl.textContent = inputEl.files[0] ? inputEl.files[0].name : "No file selected";
+      });
+      ["dragenter", "dragover"].forEach((evt) => {
+        dropEl.addEventListener(evt, (e) => {
+          e.preventDefault();
+          dropEl.classList.add("active");
+        });
+      });
+      ["dragleave", "drop"].forEach((evt) => {
+        dropEl.addEventListener(evt, (e) => {
+          e.preventDefault();
+          dropEl.classList.remove("active");
+        });
+      });
+      dropEl.addEventListener("drop", (e) => {
+        const files = e.dataTransfer.files;
+        if (!files || files.length === 0) return;
+        inputEl.files = files;
+        nameEl.textContent = files[0].name;
+      });
+    }
+
+    bindDropzone(
+      document.getElementById("imageDrop"),
+      imageInput,
+      document.getElementById("imageName")
+    );
+    bindDropzone(
+      document.getElementById("pdfDrop"),
+      pdfInput,
+      document.getElementById("pdfName")
+    );
+    bindDropzone(
+      document.getElementById("zipDrop"),
+      zipInput,
+      document.getElementById("zipName")
+    );
+
+    function updateMode() {
+      const mode = endpointEl.value;
+      imageRow.classList.toggle("hidden", mode === "/bulk");
+      pdfRow.classList.toggle("hidden", mode !== "/review");
+      fieldsRow.classList.toggle("hidden", mode !== "/review_with_fields");
+      zipRow.classList.toggle("hidden", mode !== "/bulk");
+    }
+    endpointEl.addEventListener("change", updateMode);
+    updateMode();
+
+    function decisionClass(decision) {
+      if (!decision) return "review";
+      const d = String(decision).toLowerCase();
+      if (d.includes("reject")) return "reject";
+      if (d.includes("approve") || d.includes("pass")) return "ok";
+      return "review";
+    }
+
+    function asArray(payload) {
+      return Array.isArray(payload) ? payload : [payload];
+    }
+
+    function renderResults(payload) {
+      resultsEl.innerHTML = "";
+      const rows = asArray(payload);
+      rows.forEach((item, idx) => {
+        const card = document.createElement("div");
+        card.className = "result-card";
+        const decision = item.decision || "Unknown";
+        const badgeClass = decisionClass(decision);
+        const title = item.package ? `Package: ${item.package}` : `Result ${idx + 1}`;
+        const findings = Array.isArray(item.findings) ? item.findings : [];
+        card.innerHTML = `
+          <div><strong>${title}</strong><span class="badge ${badgeClass}">${decision}</span></div>
+          <div class="kv">Confidence: ${item.confidence ?? "n/a"}</div>
+          <div class="kv">Findings:</div>
+          <ul>${findings.map(f => `<li>${String(f)}</li>`).join("")}</ul>
+        `;
+        resultsEl.appendChild(card);
+      });
+    }
+
+    submitBtn.addEventListener("click", async () => {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
+      resultsEl.innerHTML = "";
+      try {
+        const mode = endpointEl.value;
+        const fd = new FormData();
+        if (mode === "/review") {
+          if (!imageInput.files[0] || !pdfInput.files[0]) throw new Error("Image and PDF are required.");
+          fd.append("image_file", imageInput.files[0]);
+          fd.append("pdf_file", pdfInput.files[0]);
+        } else if (mode === "/review_with_fields") {
+          if (!imageInput.files[0]) throw new Error("Image is required.");
+          fd.append("image_file", imageInput.files[0]);
+          fd.append("fields_json", document.getElementById("fieldsJson").value);
+        } else if (mode === "/bulk") {
+          if (!zipInput.files[0]) throw new Error("Zip file is required.");
+          fd.append("zip_file", zipInput.files[0]);
+        }
+
+        const res = await fetch(mode, { method: "POST", body: fd });
+        const data = await res.json();
+        renderResults(data);
+      } catch (err) {
+        renderResults({
+          decision: "Human Review",
+          confidence: 0.0,
+          findings: [String(err)]
+        });
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
+      }
+    });
+  </script>
+</body>
+</html>

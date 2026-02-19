@@ -5,10 +5,12 @@ from typing import Any, List
 import json
 from io import BytesIO
 import zipfile
+import sys
+from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, UploadFile, File, Form
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 import cv2
 import numpy as np
 from PIL import Image
@@ -22,6 +24,14 @@ from logic.ocr import OCR
 from logic.required_text import RequiredText
 
 app = FastAPI(title="Alcohol Label Warning Checker")
+
+
+@app.get("/", response_class=HTMLResponse)
+async def home() -> HTMLResponse:
+    base_path = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
+    html_path = base_path / "web" / "index.html"
+    html = html_path.read_text(encoding="utf-8")
+    return HTMLResponse(html)
 
 
 @app.post("/review")
@@ -56,7 +66,6 @@ async def review(image_file: UploadFile = File(...), pdf_file: UploadFile = File
 
 @app.post("/review_with_fields")
 async def review_with_fields(image_file: UploadFile = File(...), fields_json: str = Form(...)):
-    response = {}
     try:
         try:
             fields = json.loads(fields_json)
@@ -70,7 +79,6 @@ async def review_with_fields(image_file: UploadFile = File(...), fields_json: st
                 },
                 status_code=400,
             )
-
         if not isinstance(fields, dict):
             return JSONResponse(
                 {
@@ -94,6 +102,7 @@ async def review_with_fields(image_file: UploadFile = File(...), fields_json: st
             )
 
         response = label_rules.check_rules(ocr, fields)
+        return JSONResponse(response)
     except Exception as err:
         response = {
             "decision": "Human Review",
@@ -101,7 +110,6 @@ async def review_with_fields(image_file: UploadFile = File(...), fields_json: st
             "full_text": "",
             "findings": ["Error Occurred", f"Exception: {err}"],
         }
-    finally:
         return JSONResponse(response)
 
 
