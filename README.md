@@ -88,7 +88,9 @@ curl -X POST http://localhost:8001/bulk \
 4. We assume the optimal use case is to reject applications to save the humans' time parsing obviously invalid applications.
 5. We're assuming the form is filled out correctly, and for the moment, we're assuming only actual applications even though the form supports renewals and whatnot.
 6. We're assuming access to some sort of Azure AI capable box, like a GPU.  On my CPU-only workstation, this runs at ~10 seconds.  Faster AI processing is a requirement, not an option.
-6. We're assuming there is more work to do and a lot of features not implemented, like font weight, font size, and lots of other rules.
+7. We're assuming there is more work to do and a lot of features not implemented, like font weight, font size, and lots of other rules.
+8. The confidence level is adjustable in multiple places and must be eventually tweaked via environment variables.
+9. This app will sit behind a reverse proxy that handles TLS termination.
 
 ## Project Structure
 

@@ -1,4 +1,4 @@
-FROM python:3.11-slim AS builder
+FROM python:3.11-slim-bookworm AS builder
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -22,8 +22,20 @@ RUN uv sync --frozen --no-dev
 COPY . .
 
 # Build a single executable entrypoint from main.py
-RUN uv run pip install --no-cache-dir pyinstaller && \
-    uv run pyinstaller --clean --onefile --name label-verification \
+RUN uv pip install --python .venv/bin/python pyinstaller && \
+    .venv/bin/python -c "import uvicorn, fastapi; print('freeze env ok')" && \
+    .venv/bin/python -m PyInstaller --clean --onefile --name label-verification \
+      --hidden-import uvicorn \
+      --hidden-import uvicorn.logging \
+      --hidden-import uvicorn.loops.auto \
+      --hidden-import uvicorn.protocols.http.auto \
+      --hidden-import uvicorn.protocols.websockets.auto \
+      --collect-all uvicorn \
+      --collect-all fastapi \
+      --collect-all starlette \
+      --collect-all anyio \
+      --collect-all pydantic \
+      --collect-all pydantic_core \
       --add-data "web/index.html:web" \
       main.py
 
