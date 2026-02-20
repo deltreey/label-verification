@@ -37,6 +37,7 @@ RUN uv pip install --python .venv/bin/python pyinstaller && \
       --collect-all pydantic \
       --collect-all pydantic_core \
       --add-data "web/index.html:web" \
+      --add-data "logic/required_text.yaml:logic" \
       main.py
 
 
